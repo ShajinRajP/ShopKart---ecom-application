@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% block title %}Contact US{% endblock title %}
+{% block body %} 
+<h1 class="text-center">Contact Us</h1>
+
+<div class="container mt-5">
+    {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>{{message}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+<div class="row">
+
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+    
+
+    <form action="/contact" method="post">{% csrf_token %}
+        <br>
+  
+        <label for="name"><b>Full Name</b></label>
+        <div class="form-group">
+        <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <br>
+        <label for="email"><strong>Email</strong></label>
+        <div class="form-group">
+        <input type="email" class="form-control" id="email"  name="email"  required value={{user.email}}>
+        </div>
+        <br>
+        <label for="pnumber"><b>Phone Number</b></label>
+        <div class="form-group">
+        <input type="number" class="form-control" id="pnumber" name="pnumber" required>
+        </div>
+        <br>
+        <label for="desc"><b>Write your enquery</b></label>
+        <div class="form-group">
+        <textarea type="text" class="form-control p-2" id="desc" name="desc" required> </textarea>
+        </div>
+        
+        <br>
+        <button type="submit" class="btn btn-primary">Send</button>
+        <br>
+        <br>
+        <br>
+        <br>
+    </form>
+
+    </div>
+    <div class="col-md-4"></div>
+    
+
+
+</div>
+</div>
+
+
+{% endblock body %}

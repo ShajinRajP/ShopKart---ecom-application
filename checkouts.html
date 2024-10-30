@@ -1,0 +1,166 @@
+{% extends "main.html" %}
+{% block title %} Check Out {% endblock title %}
+{% block content %}
+
+
+
+{% endblock content %}
+{% block body %}
+{% load static %}
+
+
+<section id="portfolio" class="portfolio">
+    <div class="container"  style="background-color: #f4f6f6;">
+        {% for message in messages %}
+
+        <div class="alert alert-{{message.tags}} alert-dismissible fads show" role="alert">
+         <strong>{{message}}</strong>
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        <br>
+
+        <div class="section-title">
+            <br>
+            
+            <h3> <span>Checkout Page</span></h3>
+        </div>
+
+
+        <div class="container" style="background-color: #fdfefe; width: 750px;">
+            <div class="col my-3" id="cart-section" style="display: none;">
+                <br>
+                <h4 style="color: green;">Step 1 - My Shopping Cart - Review Your Cart items</h4>
+                <div class="my-3">
+                    <ul class="list-group" id="itemsof"></ul>
+                    <br>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mt-2">
+                            <li class="breadcrumb-item active" aria-current="page">Your Cart Total Is <b>Rs. <span id="totalprice"></span>
+                            <span id="amount"></span>/-</b>. Enter your details below & place the order. Thank you for using ShopKart
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                    <br>
+                
+                    <h4 style="color: green;">Step 2 - Enter Address & Other Details:</h4>
+                    <br>
+        
+                    <form style="margin-left:25px;" method="post" action="/checkouts">{% csrf_token %}
+                        <input type="hidden" name="itemsjson" id="itemsJson">
+                        <input type="hidden" name="ant" id="ant">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputname"><b>Name</b></label>
+                                <input type="text" class="form-control mt-2" id="name" name="name" required>
+                            </div>
+                            <div class="form-group col-md-6  mt-3 ">
+                                <label for="inputEmail"><b>Email</b></label>
+                                <input type="email" class="form-control mt-2" id="email" name="email" placeholder="Email" value="{{user.email}}"required>
+                            </div>
+                        </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputAddress"><b>Address</b></label>
+                                    <input type="text" class="form-control mt-2" id="address1" name="address1"  required>
+                                </div>
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputAddress"><b>Address</b></label>
+                                    <input type="text" class="form-control mt-2" id="address2" name="address2" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputCity"><b>City</b></label>
+                                    <input type="text" class="form-control mt-2" id="city" name="city" required>
+                                </div>
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputState"><b>State</b></label>
+                                    <input type="text" class="form-control mt-2" id="state" name="state"  required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputZip"><b>Pin Code</b></label>
+                                    <input type="number" class="form-control mt-2" id="zip_code" name="zip_code" required>
+                                </div>
+                                <div class="form-group col-md-6 mt-3">
+                                    <label for="inputZip"><b>Phone Number</b></label>
+                                    <input type="number" class="form-control mt-2" id="phone" name="phone" required>
+                                </div>
+                            </div>
+                            
+                            <br>
+        
+                            <button id="btn" type="submit" class="btn btn-danger btn-sm btn-block col-md-5">CONTINUE TO PAY</button>
+                            <br>
+                    </form>  
+                    <br> 
+                
+            </div>
+            <div id="empty-cart-message" class="col my-4" style="display: none; text-align: center;">
+                <img src="">
+                <h4 style="color: black;">Your cart is empty, please add some items to your cart before checking out!</h4>
+                <br>
+                <a href="/search?search=" class="shop-now-btn">Shop Now</a>
+                <br><br>
+            </div>
+
+        </div>
+       
+
+        
+    </div>
+    
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVxpgUVvak/7bHsuwz9aW7djf3YW0eU=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha348-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+
+// Initialize cart from localStorage or create an empty object
+$(document).ready(function() {
+    var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
+    console.log(cart);
+
+    var sum = 0;
+    var totalPrice = 0;
+
+    if ($.isEmptyObject(cart)) {
+        $('#empty-cart-message').show();
+    } else {
+        for (var item in cart) {
+            let qty = parseFloat(cart[item][0]);
+            let name = cart[item][1];
+            let itemPrice = parseFloat(cart[item][2]);
+            sum += qty;
+            totalPrice += qty * itemPrice;
+
+            let mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                            ${name} <div>Price :<b>  ${itemPrice}/-</b></div>
+                            <div>Qty: ${qty}</div>
+                         </li>`;
+            $('#itemsof').append(mystr);
+        }
+        document.getElementById('totalprice').innerText = totalPrice.toFixed(2); // Fixed to 2 decimal places
+        $('#cart-section').show();
+    }
+
+    $('#itemsJson').val(JSON.stringify(cart));
+});
+
+{% if thank %}
+alert('Thanks for ordering with us. Your order Id is {{id}}. Use it to track your order using our order tracker');
+localStorage.clear();
+document.location = "/";
+{% endif %}
+
+var test = '$(totalPrice)';
+document.getElementById("ant").value = test;
+</script>
+
+
+{% endblock body %}

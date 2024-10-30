@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>
+    {% block title %} {% endblock title %}
+  </title>
+  <meta content="ecommerce website for all branded products" name="description">
+  <meta content="" name="amazon, flipkart, selling, products">
+
+  <!-- Favicons -->
+  <link href="static/assets/img/favicon.png" rel="icon">
+  <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="static/assets/css/style.css" rel="stylesheet">
+
+ 
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top bg-dark " style="padding: 0.5px;">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <!--  to use an image logo -->
+
+      <a href="/" class="logo" style="text-decoration: none; color: #ec4427; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold ; display: inline-block;">
+        <img src="{% static 'images/logos.jpg' %}" class="img-fluid" style="vertical-align: middle; margin-right: 10px;">
+        Shop Kart
+      </a>
+    
+
+      <nav class="navbar">
+        <div class="container-fluid">
+        <ul>
+          <li><a class="nav-link scrollto active p-1 m-2" href="/">Home</a></li>
+          <li><a class="nav-link scrollto p-0 m-2" href="/products">Products</a></li>
+          
+          
+          <li><a class="nav-link scrollto p-0 m-2" href="/profile">My Profile</a></li>
+          
+          <li>
+            <a tabindex="0" role="button" class="nav-link scrollto bg-danger p-1 m-2 text-white" style="border-radius: 8px"  id="popcart"
+            data-container="body"  data-bs-toggle="popover"  title="My Shopping Cart"  data-placement="bottom" data-html="true"><i class="fa-solid fa-cart-shopping"></i> 
+                 Cart (<span id="cart">0</span>)
+            </a>
+          </li>  
+          
+
+          {% if request.user.is_authenticated %}
+          <li><a class="nav-link scrollto p-1 m-2" href="/auth/logout/">Logout</a></li>
+
+          {% else %}
+          <li class="dropdown p-1 m-2"><a href=""><span>Sign In</span> <i class="bi bi-chevron-down"></i></a>
+
+
+            <ul>
+              <li><a href="/auth/signup/">Sign Up</a></li>
+              <li><a href="/auth/login/">Login</a></li>
+              
+              
+            </ul>
+          </li>
+          {% endif %}
+          <li><a class="nav-link scrollto p-0 m-2" href="/about">About</a></li>
+          <li><a class="nav-link scrollto bg-primary p-1 m-2" style="border-radius: 8px"  href="/contact">Contact</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </div>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+ <div>
+ 
+  {% block content %} {% endblock content %}
+    
+ </div>
+
+</body>

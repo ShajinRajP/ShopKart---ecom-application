@@ -1,0 +1,159 @@
+{% extends 'main.html' %}
+
+{% block title %}Shop Kart - Top Online Tech Gadgets market{% endblock title %}
+
+
+
+{% block body %}
+{% load static %}
+
+<div class="container" style="display: flex; justify-content: center; margin-top: 70px; margin-bottom: 15px">
+  <form style="display: flex; align-items: center; width: 100%; max-width: 700px;" action="/search" method="get">
+    <input class="form-control me-0" type="search" placeholder="Search" aria-label="Search" name="search"
+      style="border-radius: 25px 0 0 25px; border: 1px solid #ccc;" />
+    <button type="submit" class="btn" style="border-radius: 0 25px 25px 0; border: 1px solid #ccc; background-color: #333; color: white;">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+  </form>
+</div>
+
+<section class="home p-5 mt-1"  id="/">
+  <div class="content">
+    <h3>Flat <span class="my-3 text-center text-success "> 20% </span>Off on all Products</h3>
+    <br>
+    <p>Buy more and Get a chance to win mega bumber prices on this Diwali</p>
+    <br>
+    <a href="/search?search=" class="shop-now-btn">Shop Now</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section id="portfolio" class="portfolio">
+<div class="container">
+
+      <div class="section-title mt-3">
+        <h3> Check our <span id="trending-title"> </span></h3>
+      </div>
+
+
+      <div class="row">
+        {% for category_products in allProds %}
+        <h4 class="my-3 text-center text-success bg-light">{{ category_products.0.0.category }} Flashsale </h4>
+        <br>
+          <div class="row no-gutters">
+            {% for product in category_products.0 %}
+              <div class="col-md-4 mb-5">
+                <div class="product-image-container" style="width: 220px; height: 200px;">
+                  <img src='/media/{{product.image}}' alt="{{ product.name }}" class="product-image" style="width: 230px; height: 200px;" onclick="displayImage(this.src)">
+                </div>
+              
+                <div id="image-modal" class="modal" onclick="closeModal()">
+                  <span class="close">&times;</span>
+                  <img class="modal-content" id="modal-image">
+                </div>
+              
+                <h5 class="card-title mt-1 " style="font-weight: bold;" id="namepr{{product.id}}">{{product.product_name}}</h5>
+                <br>
+                <p class="card-text">{{product.desc|slice:"0:35"}} ...</p>
+                <h6 class="card-title mb-2 mt-1">Price:<span style="font-weight: bold;" id="pricepr{{product.id}}">{{product.price}}/-</span></h6>
+                <span id="divpr{{product.id}}" class="divpr">
+
+                  <button id="pr{{product.id}}" class="btn btn-danger cart btn-sm mt-0">AddToCart <i class="fa-solid fa-cart-shopping"></i></button>
+                </span>
+
+                <span id="buynow{{product.id}}" class="buynow">
+                  <a href="/checkouts"> <button id="pr{{product.id}}" class="btn btn-dark btn-sm cart">BuyNow <i class="fa-solid fa-bolt-lightning"></i></button></a>
+                </span>
+              
+              </div>
+              {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                </div><div class="row">
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+      
+</div>
+</section><!-- End Portfolio Section -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var cart;  // Declare cart variable
+  
+    if (localStorage.getItem('cart') == null) {
+      cart = {};  // Initialize as an empty object
+    } else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    
+    $('.buynow').on('click', 'button.cart', function() {
+      var qty, name, price;
+  
+      var idstr = this.id.toString();
+      console.log(idstr);
+  
+      if (cart[idstr] !== undefined) {
+          qty = cart[idstr][0] + 1;
+          cart[idstr][0] = qty;  // Increment quantity for existing items
+      } else {
+          qty = 1;
+          name = document.getElementById('name' + idstr).innerHTML;
+          price = document.getElementById('price' + idstr).innerHTML;
+          cart[idstr] = [qty, name, price];
+      }
+  
+      localStorage.setItem('cart', JSON.stringify(cart));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      location.reload();
+    });
+  
+
+
+  function displayImage(src) {
+    const modal = document.getElementById("image-modal");
+    const modalImage = document.getElementById("modal-image");
+    
+    modal.style.display = "block";
+    modalImage.src = src;
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("image-modal");
+    modal.style.display = "none";
+  }
+
+
+
+  const text = " Trending Products";
+  const titleElement = document.getElementById("trending-title");
+  let index = 0;
+
+  function typeLetter() {
+      if (index < text.length) {
+          titleElement.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(typeLetter, 100); // Adjust the speed here (100ms)
+      }
+  }
+
+  typeLetter();
+
+
+
+
+
+
+</script>
+
+
+{% endblock body %}
